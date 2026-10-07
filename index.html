@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SkyBook - Flight Reservation System</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            background: #123c69;
+            color: white;
+            padding: 16px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #4fc3f7;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #4fc3f7;
+        }
+
+        /* ================= PAGE ================= */
+
+        .page {
+            display: none;
+            min-height: 75vh;
+            padding: 45px 7%;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #123c69;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        /* ================= HOME ================= */
+
+        .hero {
+            min-height: 560px;
+            background:
+                linear-gradient(
+                    rgba(10, 48, 85, 0.85),
+                    rgba(10, 48, 85, 0.85)
+                ),
+                url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1600&q=80");
+
+            background-size: cover;
+            background-position: center;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 30px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .btn {
+            background: #168be6;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #0b6dbb;
+        }
+
+        .btn-danger {
+            background: #d62828;
+        }
+
+        .btn-danger:hover {
+            background: #a91f1f;
+        }
+
+        .btn-green {
+            background: #198754;
+        }
+
+        /* ================= SERVICES ================= */
+
+        .services {
+            padding: 50px 7%;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(220px, 1fr)
+            );
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: #123c69;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #168be6;
+        }
+
+        /* ================= FLIGHTS ================= */
+
+        .flight-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .flight-number {
+            font-size: 21px;
+            font-weight: bold;
+            color: #123c69;
+        }
+
+        .price {
+            font-size: 21px;
+            font-weight: bold;
+            color: #198754;
+        }
+
+        .flight-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #edf4fa;
+            padding: 14px;
+            text-align: center;
+            border-radius: 6px;
+        }
+
+        .info-box small {
+            color: #666;
+        }
+
+        /* ================= SEARCH ================= */
+
+        .search-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #123c69;
+            color: white;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        /* ================= BOOKING RESULT ================= */
+
+        .booking-result {
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+        }
+
+        .booking-result h3 {
+            color: #198754;
+            margin-bottom: 20px;
+        }
+
+        .booking-result p {
+            margin: 9px 0;
+        }
+
+        /* ================= ABOUT ================= */
+
+        .about-box {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+        }
+
+        .about-box h3 {
+            color: #123c69;
+            margin: 20px 0 10px;
+        }
+
+        .about-box p,
+        .about-box li {
+            line-height: 1.7;
+        }
+
+        .about-box ul {
+            margin-left: 25px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #123c69;
+            color: white;
+            text-align: center;
+            padding: 22px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 800px) {
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .flight-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .flight-info {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .page {
+                padding: 30px 5%;
+            }
+
+            .form-container {
+                padding: 22px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav>
+
+    <div class="logo">
+        ✈ Sky<span>Book</span>
+    </div>
+
+    <ul>
+
+        <li>
+            <a onclick="showPage('home')">Home</a>
+        </li>
+
+        <li>
+            <a onclick="showPage('register')">
+                Registration
+            </a>
+        </li>
+
+        <li>
+            <a onclick="showPage('flights')">
+                Flights
+            </a>
+        </li>
+
+        <li>
+            <a onclick="showPage('search')">
+                Search
+            </a>
+        </li>
+
+        <li>
+            <a onclick="showPage('booking')">
+                Book Flight
+            </a>
+        </li>
+
+        <li>
+            <a onclick="showPage('mybooking')">
+                My Booking
+            </a>
+        </li>
+
+        <li>
+            <a onclick="showPage('about')">
+                About
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ================= HOME ================= -->
+
+<section id="home" class="page active" style="padding:0;">
+
+    <div class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Flight Reservation System
+            </h1>
+
+            <p>
+                Search, book and manage your flights easily.
+            </p>
+
+            <button
+                class="btn"
+                onclick="showPage('search')"
+            >
+                Search Flights
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="services">
+
+        <h2 class="page-title">
+            Our Services
+        </h2>
+
+
+        <div class="cards">
+
+
+            <div
+                class="card"
+                onclick="showPage('register')"
+            >
+
+                <h3>
+                    👤 Passenger Registration
+                </h3>
+
+                <p>
+                    Register passenger information
+                    securely.
+                </p>
+
+                <br>
+
+                <button class="btn">
+                    Open Registration
+                </button>
+
+            </div>
+
+
+            <div
+                class="card"
+                onclick="showPage('flights')"
+            >
+
+                <h3>
+                    ✈ Flight Information
+                </h3>
+
+                <p>
+                    View available flights,
+                    routes and timings.
+                </p>
+
+                <br>
+
+                <button class="btn">
+                    View Flights
+                </button>
+
+            </div>
+
+
+            <div
+                class="card"
+                onclick="showPage('booking')"
+            >
+
+                <h3>
+                    🎫 Online Booking
+                </h3>
+
+                <p>
+                    Reserve your preferred flight
+                    and seats.
+                </p>
+
+                <br>
+
+                <button class="btn">
+                    Book Flight
+                </button>
+
+            </div>
+
+
+            <div
+                class="card"
+                onclick="showPage('mybooking')"
+            >
+
+                <h3>
+                    📋 Booking Management
+                </h3>
+
+                <p>
+                    View or cancel your reservation.
+                </p>
+
+                <br>
+
+                <button class="btn">
+                    My Booking
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= REGISTRATION ================= -->
+
+<section id="register" class="page">
+
+    <h2 class="page-title">
+        Passenger Registration
+    </h2>
+
+
+    <div class="form-container">
+
+        <form id="registrationForm">
+
+
+            <div class="form-group">
+
+                <label>
+                    Full Name *
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Age *
+                </label>
+
+                <input
+                    type="number"
+                    id="age"
+                    min="1"
+                    max="120"
+                    placeholder="Enter age"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Gender *
+                </label>
+
+                <select id="gender" required>
+
+                    <option value="">
+                        Select Gender
+                    </option>
+
+                    <option value="Male">
+                        Male
+                    </option>
+
+                    <option value="Female">
+                        Female
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Phone Number *
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="10 digit mobile number"
+                    pattern="[0-9]{10}"
+                    maxlength="10"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Email *
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="example@email.com"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Address *
+                </label>
+
+                <input
+                    type="text"
+                    id="address"
+                    placeholder="Enter address"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Register Passenger
+            </button>
+
+
+        </form>
+
+
+        <div
+            id="registrationMessage"
+            class="message"
+        ></div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= FLIGHTS ================= -->
+
+<section id="flights" class="page">
+
+    <h2 class="page-title">
+        Available Flights
+    </h2>
+
+    <div id="flightList"></div>
+
+</section>
+
+
+<!-- ================= SEARCH ================= -->
+
+<section id="search" class="page">
+
+    <h2 class="page-title">
+        Search Flights
+    </h2>
+
+
+    <div class="search-box">
+
+
+        <div class="search-grid">
+
+
+            <div>
+
+                <label>
+                    From
+                </label>
+
+                <select id="searchFrom">
+
+                    <option value="">
+                        Any City
+                    </option>
+
+                    <option>
+                        Pune
+                    </option>
+
+                    <option>
+                        Mumbai
+                    </option>
+
+                    <option>
+                        Delhi
+                    </option>
+
+                    <option>
+                        Bangalore
+                    </option>
+
+                    <option>
+                        Hyderabad
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    To
+                </label>
+
+                <select id="searchTo">
+
+                    <option value="">
+                        Any City
+                    </option>
+
+                    <option>
+                        Pune
+                    </option>
+
+                    <option>
+                        Mumbai
+                    </option>
+
+                    <option>
+                        Delhi
+                    </option>
+
+                    <option>
+                        Bangalore
+                    </option>
+
+                    <option>
+                        Hyderabad
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Sort Flights
+                </label>
+
+                <select id="sortFlight">
+
+                    <option value="default">
+                        Default
+                    </option>
+
+                    <option value="priceLow">
+                        Price: Low to High
+                    </option>
+
+                    <option value="priceHigh">
+                        Price: High to Low
+                    </option>
+
+                    <option value="seats">
+                        Most Seats Available
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+        <br>
+
+
+        <button
+            class="btn"
+            onclick="searchFlights()"
+        >
+            🔎 Search Flights
+        </button>
+
+
+    </div>
+
+
+    <div id="searchResults"></div>
+
+</section>
+
+
+<!-- ================= BOOKING ================= -->
+
+<section id="booking" class="page">
+
+    <h2 class="page-title">
+        Flight Reservation
+    </h2>
+
+
+    <div class="form-container">
+
+
+        <form id="bookingForm">
+
+
+            <div class="form-group">
+
+                <label>
+                    Passenger ID *
+                </label>
+
+                <input
+                    type="text"
+                    id="passengerId"
+                    placeholder="Example: P1234"
+                    required
+                >
+
+                <small>
+                    Register the passenger first to get a Passenger ID.
+                </small>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Select Flight *
+                </label>
+
+                <select
+                    id="bookingFlight"
+                    required
+                >
+
+                    <option value="">
+                        Select Flight
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Travel Date *
+                </label>
+
+                <input
+                    type="date"
+                    id="travelDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class
